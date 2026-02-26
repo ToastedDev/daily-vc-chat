@@ -29,6 +29,7 @@ export interface DiscordMessage {
     avatar: string;
   };
   content: string;
+  attachments: string[];
 }
 
 export interface DeletedMessage {

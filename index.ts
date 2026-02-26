@@ -61,6 +61,7 @@ async function startDiscord() {
           message.author.displayAvatarURL(),
       },
       content: message.content,
+      attachments: message.attachments.map((attachment) => attachment.url),
     });
   });
 
