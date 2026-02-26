@@ -336,6 +336,24 @@ interface MessageGroupRowProps {
   group: MessageGroup;
 }
 
+const MessageLine: React.FC<{ msg: ChatMessage }> = ({ msg }) => {
+  return (
+    <div className="message-line">
+      {msg.content}
+      {msg.platform === "discord" && msg.edited && (
+        <small className="message-edited">(edited)</small>
+      )}
+      {msg.platform === "discord" && msg.attachments.length === 1 && (
+        <img
+          src={msg.attachments[0]}
+          alt="Attachment"
+          className="message-attachment"
+        />
+      )}
+    </div>
+  );
+};
+
 const MessageGroupRow: React.FC<MessageGroupRowProps> = ({ group }) => {
   const { first, messages } = group;
 
@@ -364,12 +382,7 @@ const MessageGroupRow: React.FC<MessageGroupRowProps> = ({ group }) => {
                   {first.platform === "youtube" ? "YouTube" : "Discord"}
                 </span>
               </div>
-              <div className="message-line">
-                {msg.content}
-                {msg.platform === "discord" && msg.edited && (
-                  <small className="message-edited">(edited)</small>
-                )}
-              </div>
+              <MessageLine msg={msg} />
             </div>
           </div>
         ) : (
@@ -380,12 +393,7 @@ const MessageGroupRow: React.FC<MessageGroupRowProps> = ({ group }) => {
               </span>
             </div>
             <div className="message-body">
-              <div className="message-line">
-                {msg.content}
-                {msg.platform === "discord" && msg.edited && (
-                  <small className="message-edited">(edited)</small>
-                )}
-              </div>
+              <MessageLine msg={msg} />
             </div>
           </div>
         )

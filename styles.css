@@ -202,13 +202,6 @@ body {
   color: var(--text-muted);
 }
 
-.message-edited {
-  font-size: 11px;
-  color: var(--text-muted);
-  vertical-align: bottom;
-  margin-left: 3px;
-}
-
 .message-platform-pill {
   font-size: 10px;
   padding: 1px 7px 2px;
@@ -236,6 +229,21 @@ body {
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.message-edited {
+  font-size: 11px;
+  color: var(--text-muted);
+  vertical-align: bottom;
+  margin-left: 3px;
+}
+
+.message-attachment {
+  display: block;
+  width: 100%;
+  max-width: 350px;
+  margin-top: 4px;
+  border-radius: 4px;
 }
 
 .toast-reconnect {
