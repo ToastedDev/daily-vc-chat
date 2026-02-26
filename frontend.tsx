@@ -11,6 +11,7 @@ import { createRoot } from "react-dom/client";
 import type {
   ChatMessage,
   DeletedMessage,
+  DiscordEditedMessage,
   HistoryMessage,
   Message,
 } from "./types";
@@ -24,6 +25,7 @@ interface ChatState {
 type ChatAction =
   | { type: "history"; payload: ChatMessage[] }
   | { type: "add-message"; payload: ChatMessage }
+  | { type: "edit"; payload: DiscordEditedMessage }
   | { type: "delete"; payload: DeletedMessage };
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
@@ -37,6 +39,14 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return {
         messages: next.slice(-100),
       };
+    }
+    case "edit": {
+      const next = state.messages.map((m) =>
+        m.id === action.payload.id
+          ? { ...m, content: action.payload.content, edited: true }
+          : m
+      );
+      return { messages: next };
     }
     case "delete": {
       const next = state.messages.filter(
@@ -228,6 +238,10 @@ const App: React.FC = () => {
       dispatch({ type: "add-message", payload: msg as ChatMessage });
       return;
     }
+    if (msg.type === "edit") {
+      dispatch({ type: "edit", payload: msg as DiscordEditedMessage });
+      return;
+    }
     if (msg.type === "delete") {
       dispatch({
         type: "delete",
@@ -350,7 +364,12 @@ const MessageGroupRow: React.FC<MessageGroupRowProps> = ({ group }) => {
                   {first.platform === "youtube" ? "YouTube" : "Discord"}
                 </span>
               </div>
-              <div className="message-line">{msg.content}</div>
+              <div className="message-line">
+                {msg.content}
+                {msg.platform === "discord" && msg.edited && (
+                  <small className="message-edited">(edited)</small>
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -361,7 +380,12 @@ const MessageGroupRow: React.FC<MessageGroupRowProps> = ({ group }) => {
               </span>
             </div>
             <div className="message-body">
-              <div className="message-line">{msg.content}</div>
+              <div className="message-line">
+                {msg.content}
+                {msg.platform === "discord" && msg.edited && (
+                  <small className="message-edited">(edited)</small>
+                )}
+              </div>
             </div>
           </div>
         )

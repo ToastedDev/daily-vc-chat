@@ -1,4 +1,8 @@
-export type Message = ChatMessage | DeletedMessage | HistoryMessage;
+export type Message =
+  | ChatMessage
+  | DeletedMessage
+  | HistoryMessage
+  | DiscordEditedMessage;
 
 export type ChatMessage = YouTubeMessage | DiscordMessage;
 
@@ -30,6 +34,15 @@ export interface DiscordMessage {
   };
   content: string;
   attachments: string[];
+  edited?: boolean;
+}
+
+export interface DiscordEditedMessage {
+  type: "edit";
+  platform: "discord";
+  id: string;
+  timestamp: number;
+  content: string;
 }
 
 export interface DeletedMessage {

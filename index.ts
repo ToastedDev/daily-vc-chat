@@ -29,6 +29,12 @@ function removeFromBuffer(id: string) {
   messageBuffer = messageBuffer.filter((message) => message.id !== id);
 }
 
+function editInBuffer(id: string, content: string) {
+  messageBuffer = messageBuffer.map((message) =>
+    message.id === id ? { ...message, content, edited: true } : message
+  );
+}
+
 function broadcastChatMessage(message: ChatMessage) {
   addToBuffer(message);
   broadcastMessage(message);
@@ -63,6 +69,23 @@ async function startDiscord() {
       content: message.content,
       attachments: message.attachments.map((attachment) => attachment.url),
     });
+  });
+
+  discord.on("messageUpdate", (oldMessage, newMessage) => {
+    if (
+      !newMessage.inGuild() ||
+      newMessage.channelId !== DISCORD_CHANNEL_ID ||
+      !messageBuffer.find((m) => m.id === newMessage.id)
+    )
+      return;
+    broadcastMessage({
+      type: "edit",
+      platform: "discord",
+      id: newMessage.id,
+      timestamp: newMessage.editedTimestamp!,
+      content: newMessage.content,
+    });
+    editInBuffer(newMessage.id, newMessage.content);
   });
 
   discord.on("messageDelete", (message) => {
